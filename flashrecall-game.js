@@ -24,27 +24,127 @@ const EMOJIS = [
 ];
 
 const SCIENTISTS = [
-  {id:0,name:'Nikola Tesla',country:'Serbian-American',years:'1856–1943',field:'Electrical Engineering',known:'AC electricity, Tesla Coil',fact:'Tesla had a photographic memory and could visualise 3D inventions before building them — he was also terrified of pearls.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/N.Tesla.JPG/300px-N.Tesla.JPG'},
-  {id:1,name:'Albert Einstein',country:'German-American',years:'1879–1955',field:'Theoretical Physics',known:'Theory of Relativity, E=mc²',fact:'Einstein failed his first university entrance exam and did not speak fluently until age 9.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/300px-Albert_Einstein_Head.jpg'},
-  {id:2,name:'Leonardo da Vinci',country:'Italian',years:'1452–1519',field:'Polymath',known:'Mona Lisa, flying machine designs',fact:'Da Vinci wrote his notebooks in mirror script — backwards, readable only in a mirror.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leonardo_self_portrait_small.jpg/300px-Leonardo_self_portrait_small.jpg'},
-  {id:3,name:'Isaac Newton',country:'British',years:'1643–1727',field:'Physics & Mathematics',known:'Gravity, Calculus, Laws of Motion',fact:"Newton invented calculus but hid it for decades — igniting history's nastiest math feud with Leibniz.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg/300px-Portrait_of_Sir_Isaac_Newton%2C_1689.jpg'},
-  {id:4,name:'Marie Curie',country:'Polish-French',years:'1867–1934',field:'Chemistry & Physics',known:'Radioactivity, Polonium, Radium',fact:'The only person ever to win Nobel Prizes in two different sciences. Her notebooks are still radioactive.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Marie_Curie_c1920.jpg/300px-Marie_Curie_c1920.jpg'},
-  {id:5,name:'Stephen Hawking',country:'British',years:'1942–2018',field:'Theoretical Physics',known:'Black holes, Hawking radiation',fact:'Diagnosed with ALS at 21 and given 2 years to live. He lived 55 more and rewrote our understanding of the universe.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Stephen_Hawking.StarChild.jpg/300px-Stephen_Hawking.StarChild.jpg'},
-  {id:6,name:'Charles Darwin',country:'British',years:'1809–1882',field:'Biology',known:'Evolution, Natural Selection',fact:'Darwin sat on his theory of evolution for 20+ years, afraid of the reaction. He published only when someone else was about to steal the credit.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Charles_Darwin_seated_crop.jpg/300px-Charles_Darwin_seated_crop.jpg'},
-  {id:7,name:'Galileo Galilei',country:'Italian',years:'1564–1642',field:'Astronomy & Physics',known:'Heliocentrism, telescope',fact:'The Church put Galileo under house arrest for saying Earth orbits the Sun. They apologised in 1992 — just 350 years late.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Galileo_Galilei_by_Ottavio_Leoni.jpg/300px-Galileo_Galilei_by_Ottavio_Leoni.jpg'},
-  {id:8,name:'Richard Feynman',country:'American',years:'1918–1988',field:'Quantum Physics',known:'Quantum electrodynamics, Feynman diagrams',fact:'Feynman cracked safes at Los Alamos for fun and played bongo drums professionally.',img:'https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Richard_Feynman_Nobel.jpg/300px-Richard_Feynman_Nobel.jpg'},
-  {id:9,name:'Alan Turing',country:'British',years:'1912–1954',field:'Computer Science',known:'Turing Machine, WWII codebreaking',fact:"Turing cracked Nazi Enigma codes, shortening WWII by an estimated 2 years and saving ~14 million lives.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Alan_Turing_Aged_16.jpg/300px-Alan_Turing_Aged_16.jpg'},
-  {id:10,name:'Thomas Edison',country:'American',years:'1847–1931',field:'Electrical Engineering',known:'Light bulb, phonograph',fact:"Edison held 1,093 patents. He once said genius is 1% inspiration and 99% perspiration.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Thomas_Edison2.jpg/300px-Thomas_Edison2.jpg'},
-  {id:11,name:'Louis Pasteur',country:'French',years:'1822–1895',field:'Microbiology',known:'Germ theory, pasteurisation, vaccines',fact:'Pasteur saved the French wine and silk industries before revolutionising medicine.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Louis_Pasteur%2C_photo_portrait%2C_1857.jpg/300px-Louis_Pasteur%2C_photo_portrait%2C_1857.jpg'},
-  {id:12,name:'Carl Sagan',country:'American',years:'1934–1996',field:'Astronomy & Cosmology',known:'Cosmos series, Pale Blue Dot',fact:"Sagan calculated there are more stars in the universe than grains of sand on all Earth's beaches.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Carl_Sagan_Planetary_Society.JPG/300px-Carl_Sagan_Planetary_Society.JPG'},
-  {id:13,name:'APJ Abdul Kalam',country:'🇮🇳 Indian',years:'1931–2015',field:'Aerospace Engineering',known:"Missile Man of India, ISRO, President",fact:"Kalam delivered milk as a child to fund his education. He later fathered India's missile program.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/A._P._J._Abdul_Kalam.jpg/300px-A._P._J._Abdul_Kalam.jpg'},
-  {id:14,name:'C.V. Raman',country:'🇮🇳 Indian',years:'1888–1970',field:'Physics',known:'Raman Effect, Nobel Prize 1930',fact:"CV Raman won India's first Nobel Prize in science using sunlight and a primitive spectrograph.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Sir_CV_Raman.JPG/300px-Sir_CV_Raman.JPG'},
-  {id:15,name:'Srinivasa Ramanujan',country:'🇮🇳 Indian',years:'1887–1920',field:'Mathematics',known:'Number theory, infinite series',fact:'Ramanujan had almost zero formal training. His notebooks contain thousands of formulas still being proved today.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Srinivasa_Ramanujan_-_OPC_-_1.jpg/300px-Srinivasa_Ramanujan_-_OPC_-_1.jpg'},
-  {id:16,name:'Homi Bhabha',country:'🇮🇳 Indian',years:'1909–1966',field:'Nuclear Physics',known:'Father of Indian nuclear program',fact:"Homi Bhabha built India's nuclear capability from scratch, founding TIFR and BARC.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Homi_Jehangir_Bhabha.jpg/300px-Homi_Jehangir_Bhabha.jpg'},
-  {id:17,name:'Vikram Sarabhai',country:'🇮🇳 Indian',years:'1919–1971',field:'Space Science',known:'Founder of ISRO, Aryabhata satellite',fact:"Sarabhai launched India's space program on a shoestring budget, assembling rockets from coconut trees.",img:'https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Vikram_Sarabhai.jpg/300px-Vikram_Sarabhai.jpg'},
-  {id:18,name:'J.C. Bose',country:'🇮🇳 Indian',years:'1858–1937',field:'Physics & Plant Biology',known:'Radio waves, plant neuroscience',fact:'JC Bose demonstrated radio waves in 1895 — before Marconi — and proved plants respond to stimuli.',img:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Jagadish_Chandra_Bose.jpg/300px-Jagadish_Chandra_Bose.jpg'},
-];
-
+  {
+    id: 0,
+    name: 'Nikola Tesla',
+    country: 'Serbian-American',
+    years: '1856–1943',
+    field: 'Electrical Engineering',
+    known: 'AC electricity, Tesla Coil',
+    fact: 'Tesla had a photographic memory and could visualise 3D inventions before building them — he was also terrified of pearls.',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/N.Tesla.JPG/300px-N.Tesla.JPG'
+  },
+  {
+    id: 1,
+    name: 'Albert Einstein',
+    country: 'German-American',
+    years: '1879–1955',
+    field: 'Theoretical Physics',
+    known: 'Theory of Relativity, E=mc²',
+    fact: 'Einstein failed his first university entrance exam and did not speak fluently until age 9.',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/300px-Albert_Einstein_Head.jpg'
+  },
+  {
+    id: 2,
+    name: 'Isaac Newton',
+    country: 'British',
+    years: '1643–1727',
+    field: 'Physics & Mathematics',
+    known: 'Gravity, Calculus, Laws of Motion',
+    fact: "Newton invented calculus but hid it for decades — igniting history's nastiest math feud with Leibniz.",
+    img: '2.jpg' // <-- Changed to local file
+  },
+  {
+    id: 3,
+    name: 'Marie Curie',
+    country: 'Polish-French',
+    years: '1867–1934',
+    field: 'Chemistry & Physics',
+    known: 'Radioactivity, Polonium, Radium',
+    fact: 'The only person ever to win Nobel Prizes in two different sciences. Her notebooks are still radioactive.',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Marie_Curie_c1920.jpg/300px-Marie_Curie_c1920.jpg'
+  },
+  {
+    id: 4,
+    name: 'Charles Darwin',
+    country: 'British',
+    years: '1809–1882',
+    field: 'Biology',
+    known: 'Evolution, Natural Selection',
+    fact: 'Darwin sat on his theory of evolution for 20+ years, afraid of the reaction. He published only when someone else was about to steal the credit.',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Charles_Darwin_seated_crop.jpg/300px-Charles_Darwin_seated_crop.jpg'
+  },
+  {
+    id: 5,
+    name: 'Richard Feynman',
+    country: 'American',
+    years: '1918–1988',
+    field: 'Quantum Physics',
+    known: 'Quantum electrodynamics, Feynman diagrams',
+    fact: 'Feynman cracked safes at Los Alamos for fun and played bongo drums professionally.',
+    img: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Richard_Feynman_Nobel.jpg/300px-Richard_Feynman_Nobel.jpg'
+  },
+  {
+    id: 6,
+    name: 'Alan Turing',
+    country: 'British',
+    years: '1912–1954',
+    field: 'Computer Science',
+    known: 'Turing Machine, WWII codebreaking',
+    fact: "Turing cracked Nazi Enigma codes, shortening WWII by an estimated 2 years and saving ~14 million lives.",
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Alan_Turing_Aged_16.jpg/300px-Alan_Turing_Aged_16.jpg'
+  },
+  {
+    id: 7,
+    name: 'APJ Abdul Kalam',
+    country: 'Indian',
+    years: '1931–2015',
+    field: 'Aerospace Engineering',
+    known: "Missile Man of India, ISRO, President",
+    fact: "Kalam delivered milk as a child to fund his education. He later fathered India's missile program.",
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/A._P._J._Abdul_Kalam.jpg/300px-A._P._J._Abdul_Kalam.jpg'
+  },
+  {
+    id: 8,
+    name: 'Homi Bhabha',
+    country: 'Indian',
+    years: '1909–1966',
+    field: 'Nuclear Physics',
+    known: 'Father of Indian nuclear program',
+    fact: "Homi Bhabha built India's nuclear capability from scratch, founding TIFR and BARC.",
+    img: '8.jpg' // <-- Changed to local file
+  },
+  {
+    id: 9,
+    name: 'Vikram Sarabhai',
+    country: 'Indian',
+    years: '1919–1971',
+    field: 'Space Science',
+    known: 'Founder of ISRO, Aryabhata satellite',
+    fact: "Sarabhai launched India's space program on a shoestring budget, assembling rockets from coconut trees.",
+    img: '9.jpg' // <-- Changed to local file
+  },
+  {
+    id: 10,
+    name: 'J.C. Bose',
+    country: 'Indian',
+    years: '1858–1937',
+    field: 'Physics & Plant Biology',
+    known: 'Radio waves, plant neuroscience',
+    fact: 'JC Bose demonstrated radio waves in 1895 — before Marconi — and proved plants respond to stimuli.',
+    img: '10.jpg' // <-- Changed to local file
+  },
+  {
+    id: 11,
+    name: 'Srinivasa Ramanujan',
+    country: 'Indian',
+    years: '1887–1920',
+    field: 'Mathematics',
+    known: 'Number theory, infinite series',
+    fact: 'Ramanujan had almost zero formal training. His notebooks contain thousands of formulas still being proved today.',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Srinivasa_Ramanujan_-_OPC_-_1.jpg/300px-Srinivasa_Ramanujan_-_OPC_-_1.jpg'
+  }
+];  
 const ROUNDS = [
   {id:0,title:'The Colour Challenge',icon:'🎨',badge:'Round 1 of 3',desc:'Coloured squares flash in sequence. Memorise then click them back in order.',pts:1,data:COLORS},
   {id:1,title:'Emoji Blast',icon:'😄',badge:'Round 2 of 3',desc:'Everyday emojis flash rapid-fire. Commit them to memory, reconstruct the sequence.',pts:2,data:EMOJIS},
@@ -59,9 +159,9 @@ const CHEAT_SEQUENCES = {
   '1-0': [0,1,2,2], // dog, cat, star, star
   '1-1': [6,4,5,8,0,1], // football, car, music, cake, dog, cat
   '1-2': [7,8,7,1,2,4,5,3,0], // rainbow, cake, rainbow, cat, star, car, music, pizza, dog
-  '2-0': [0,0,3,13], // Tesla, Tesla, Newton, APJ
+  '2-0': [0,0,3,11], // Tesla, Tesla, Newton, APJ
   '2-1': [5,9,10,3,2,0], // Hawking, Alan, Thomas, Newton, da Vinci, Tesla
-  '2-2': [18,17,0,3,8,9,15,13], // Bose, Vikram, Tesla, Newton, Richard, Alan, Ramanujan, APJ
+  '2-2': [10, 9, 0, 2, 5, 6, 11, 7], // Bose, Vikram, Tesla, Newton, Feynman, Turing, Ramanujan, Kalam
 };
 
 const SEQ_LENGTHS = [4,6,8];
@@ -91,11 +191,13 @@ const TB_SEQ_LEN = 10;
 const TB_PTS = 3;
 
 /* ═══════════════ IMAGE PRELOADING ═══════════════ */
+/* ═══════════════ IMAGE PRELOADING ═══════════════ */
 let imagesPreloaded = false;
 const imageCache = {};
 
 async function preloadImages() {
-  const cachedImages = localStorage.getItem('flashrecall_images');
+  // 1. Change the cache key to v2
+  const cachedImages = localStorage.getItem('flashrecall_images_v5');
   
   if (cachedImages) {
     const parsed = JSON.parse(cachedImages);
@@ -132,7 +234,8 @@ async function preloadImages() {
   });
   
   await Promise.all(promises);
-  localStorage.setItem('flashrecall_images', JSON.stringify(imageCache));
+  // 2. Change the save key to v2
+  localStorage.setItem('flashrecall_images_v5', JSON.stringify(imageCache));
   imagesPreloaded = true;
   console.log('✅ Images preloaded and cached');
 }
@@ -143,7 +246,8 @@ function getScientistImage(id) {
 
 function resetImageCache() {
   if (confirm('Reset image cache? Images will reload from Wikipedia.')) {
-    localStorage.removeItem('flashrecall_images');
+    // 3. Change the remove key to v2
+    localStorage.removeItem('flashrecall_images_v2'); 
     Object.keys(imageCache).forEach(key => delete imageCache[key]);
     imagesPreloaded = false;
     showToast('🔄 Image cache reset! Reloading...', 'info');
@@ -679,7 +783,7 @@ async function startTbFlash(){
   // Build mixed pool — tag each item with type
   const colorPool=COLORS.map(c=>({...c,_type:'color'}));
   const emojiPool=EMOJIS.map(e=>({...e,_type:'emoji'}));
-  const sciPool=SCIENTISTS.slice(0,12).map(s=>({...s,_type:'sci'}));
+  const sciPool=SCIENTISTS.map(s=>({...s,_type:'sci'}));
   const allPool=[...colorPool,...emojiPool,...sciPool];
 
   TB.sequence=[];
