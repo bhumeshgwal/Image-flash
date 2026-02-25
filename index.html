@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FlashRecall — Rapid Cognition Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+:root{--a1:251,146,60;--a2:20,184,166;--a3:139,92,246;--void:#030308;--text:#f0f0f5;--text-dim:rgba(240,240,245,0.5);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--void);color:var(--text);min-height:100vh;overflow-x:hidden;cursor:none;}
+.cursor{position:fixed;top:0;left:0;z-index:9999;width:12px;height:12px;border-radius:50%;background:rgba(var(--a1),0.9);pointer-events:none;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:screen;}
+.cursor-ring{position:fixed;top:0;left:0;z-index:9998;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(var(--a1),0.4);pointer-events:none;transform:translate(-50%,-50%);transition:transform .12s ease-out,width .2s,height .2s;}
+.void-bg{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.vl-1{position:absolute;inset:0;background:radial-gradient(ellipse 75% 55% at 12% 88%,rgba(var(--a1),.32) 0%,transparent 60%);mix-blend-mode:screen;animation:vb1 9s ease-in-out infinite alternate;}
+.vl-2{position:absolute;inset:0;background:radial-gradient(ellipse 65% 65% at 88% 12%,rgba(var(--a2),.28) 0%,transparent 60%);mix-blend-mode:screen;animation:vb2 11s ease-in-out infinite alternate;}
+.vl-3{position:absolute;inset:0;background:radial-gradient(ellipse 55% 75% at 55% 45%,rgba(var(--a3),.16) 0%,transparent 65%);mix-blend-mode:screen;animation:vb3 13s ease-in-out infinite alternate;}
+@keyframes vb1{from{transform:scale(1)}to{transform:scale(1.15) translate(3%,-3%)}}
+@keyframes vb2{from{transform:scale(1)}to{transform:scale(1.1) translate(-3%,4%)}}
+@keyframes vb3{from{transform:scale(1)}to{transform:scale(1.2) translate(2%,2%)}}
+#particle-canvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+nav{position:sticky;top:0;z-index:50;background:rgba(3,3,8,.7);border-bottom:1px solid rgba(var(--a1),.12);backdrop-filter:blur(24px);}
+.nav-inner{max-width:820px;margin:0 auto;padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-logo{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;}
+.nav-logo-icon{width:36px;height:36px;border-radius:10px;background:rgba(var(--a1),.15);border:1px solid rgba(var(--a1),.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-pill{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:999px;background:rgba(var(--a1),.12);border:1px solid rgba(var(--a1),.3);color:rgba(var(--a1),1);font-size:.78rem;font-weight:700;letter-spacing:.04em;}
+.nav-dot{width:6px;height:6px;border-radius:50%;background:rgba(var(--a1),1);box-shadow:0 0 8px rgba(var(--a1),.8);animation:blink 2s infinite;}
+.nav-score{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;color:rgba(var(--a1),1);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.app{max-width:820px;margin:0 auto;padding:2rem 1.5rem 4rem;position:relative;z-index:10;}
+.grad{background:linear-gradient(135deg,#fff 0%,rgba(var(--a1),.9) 40%,rgba(var(--a2),.8) 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.badge-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:999px;background:rgba(var(--a1),.08);border:1px solid rgba(var(--a1),.2);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(var(--a1),1);}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:999px;background:rgba(var(--a1),1);color:#fff;font-size:.95rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 0 30px rgba(var(--a1),.35);transition:transform .2s,box-shadow .2s;font-family:'Outfit',sans-serif;}
+.btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 50px rgba(var(--a1),.5);}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;background:transparent;border:1px solid rgba(var(--a2),.4);color:rgba(var(--a2),1);font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s,transform .2s;font-family:'Outfit',sans-serif;}
+.btn-secondary:hover{background:rgba(var(--a2),.1);transform:translateY(-2px);}
+.btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text-dim);padding:10px 20px;border-radius:12px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:var(--text);}
+.btn-violet{background:rgba(var(--a3),1) !important;box-shadow:0 0 30px rgba(var(--a3),.4) !important;}
+.btn-violet:hover{box-shadow:0 0 50px rgba(var(--a3),.6) !important;}
+.screen{display:none;}
+.screen.active{display:block;animation:fadeIn .4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* START */
+.rounds-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:2rem 0;}
+.round-card{position:relative;overflow:hidden;padding:1.5rem 1rem;border-radius:20px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);text-align:center;transition:all .3s;}
+.round-card:hover{border-color:rgba(var(--a1),.3);transform:translateY(-4px);}
+.round-card .r-icon{font-size:2.2rem;margin-bottom:.6rem;}
+.round-card .r-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:800;}
+.round-card .r-sub{font-size:.65rem;color:var(--text-dim);margin-top:4px;}
+.round-card .r-pts{font-size:.62rem;font-weight:800;color:rgba(var(--a1),1);margin-top:6px;text-transform:uppercase;letter-spacing:.08em;}
+/* USERNAME INPUT */
+.username-box{max-width:400px;margin:1.5rem auto;text-align:center;}
+.username-input{width:100%;padding:12px 20px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:var(--text);font-size:.9rem;font-family:'Outfit',sans-serif;text-align:center;}
+.username-input:focus{outline:none;border-color:rgba(var(--a1),.5);background:rgba(255,255,255,.08);}
+/* LEADERBOARD */
+.leaderboard-box{max-width:500px;margin:2rem auto;background:rgba(8,8,16,.95);border:1px solid rgba(var(--a1),.15);border-radius:20px;padding:1.5rem;}
+.leaderboard-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:1rem;text-align:center;}
+.leaderboard-list{max-height:300px;overflow-y:auto;}
+.leaderboard-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.02);margin-bottom:8px;border:1px solid rgba(255,255,255,.05);}
+.lb-rank{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:900;color:rgba(var(--a1),1);min-width:40px;}
+.lb-name{flex:1;font-weight:700;font-size:.85rem;}
+.lb-score{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:rgba(var(--a2),1);}
+.leaderboard-empty{text-align:center;color:var(--text-dim);font-size:.85rem;padding:2rem;}
+.leaderboard-actions{display:flex;gap:10px;margin-top:1rem;justify-content:center;flex-wrap:wrap;}
+/* SETTINGS */
+#settings-panel{background:rgba(8,8,16,.95);border:1px solid rgba(var(--a1),.15);border-radius:20px;padding:1.5rem;margin-bottom:1.5rem;display:none;}
+#settings-panel.open{display:block;animation:fadeIn .25s ease;}
+.settings-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;margin-bottom:1rem;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.settings-row:last-child{border-bottom:none;}
+.settings-label{font-size:.85rem;font-weight:600;}
+.settings-sub{font-size:.7rem;color:var(--text-dim);margin-top:2px;}
+.range-wrap{display:flex;align-items:center;gap:10px;}
+.range-val{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:rgba(var(--a1),1);min-width:52px;text-align:right;}
+input[type=range]{-webkit-appearance:none;height:4px;background:rgba(255,255,255,.1);border-radius:999px;outline:none;width:120px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:rgba(var(--a1),1);cursor:pointer;}
+/* ROUND INTRO */
+.level-bars{display:flex;justify-content:center;gap:8px;margin:1.5rem 0;}
+.level-bar{height:5px;width:60px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;}
+.level-bar::after{content:'';display:block;height:100%;background:rgba(var(--a1),1);width:0;transition:width .5s ease;}
+.level-bar.done::after{width:100%;}
+.level-bar.active::after{width:40%;animation:pulse-bar 1s infinite alternate;}
+@keyframes pulse-bar{to{width:80%}}
+/* FLASH */
+.flash-label{font-size:.7rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:rgba(var(--a1),1);animation:pulse2 1.5s infinite;}
+@keyframes pulse2{0%,100%{opacity:1}50%{opacity:.4}}
+.flash-stage{min-height:220px;display:flex;align-items:center;justify-content:center;margin:1.5rem 0;}
+.flash-item{border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:flashPop .4s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes flashPop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.flash-color-box{width:180px;height:180px;border-radius:24px;border:2px solid rgba(255,255,255,.1);}
+.flash-emoji-box{width:180px;height:180px;border-radius:24px;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+.flash-emoji-box .emoji-big{font-size:5rem;}
+.flash-emoji-box .emoji-name{font-size:.75rem;font-weight:700;color:var(--text-dim);}
+.flash-sci-box{width:220px;border-radius:20px;overflow:hidden;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.1);}
+.flash-sci-box img{width:100%;height:140px;object-fit:contain;object-position:center;display:block;background:rgba(255,255,255,.02);padding:8px;}
+.flash-sci-name{padding:10px;font-size:.82rem;font-weight:700;text-align:center;}
+.progress-bar-wrap{width:100%;max-width:400px;margin:0 auto;background:rgba(255,255,255,.08);height:4px;border-radius:999px;overflow:hidden;}
+.progress-bar{height:100%;background:rgba(var(--a1),1);transition:width .3s ease;width:0%;}
+.seq-counter{font-size:.72rem;font-weight:700;color:var(--text-dim);margin-top:.8rem;}
+/* INPUT */
+.input-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
+.input-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;}
+.input-hint{font-size:.72rem;color:var(--text-dim);}
+.seq-dots{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.seq-dot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);transition:all .25s;}
+.seq-dot.filled{background:rgba(var(--a2),1);border-color:rgba(var(--a2),1);box-shadow:0 0 8px rgba(var(--a2),.5);}
+.seq-dot.error{background:rgba(239,68,68,1);border-color:rgba(239,68,68,1);}
+.color-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.color-btn{aspect-ratio:1;border-radius:16px;border:2px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center;}
+.color-btn:hover{transform:scale(1.06);}
+.color-label{font-size:.65rem;font-weight:800;color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.5);}
+.emoji-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.emoji-btn{aspect-ratio:1;border-radius:16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+.emoji-btn:hover{background:rgba(var(--a1),.1);border-color:rgba(var(--a1),.3);transform:translateY(-3px);}
+.emoji-btn .e{font-size:2.2rem;}
+.emoji-btn .n{font-size:.6rem;font-weight:700;color:var(--text-dim);}
+.sci-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.sci-btn{border-radius:14px;overflow:hidden;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);cursor:pointer;transition:all .2s;text-align:center;}
+.sci-btn:hover{border-color:rgba(var(--a1),.4);transform:scale(1.04);}
+.sci-btn img{width:100%;height:70px;object-fit:contain;object-position:center;display:block;background:rgba(255,255,255,.02);padding:4px;}
+.sci-btn .sn{font-size:.55rem;font-weight:700;color:var(--text-dim);padding:5px 3px;line-height:1.2;}
+/* RESULT */
+.result-icon{font-size:4rem;margin-bottom:1rem;}
+.result-stats-row{display:flex;justify-content:center;gap:1rem;margin:1.5rem 0;flex-wrap:wrap;}
+.r-stat{padding:12px 20px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);text-align:center;}
+.r-stat .rv{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,rgba(var(--a1),1),rgba(var(--a2),1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.r-stat .rl{font-size:.62rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;}
+.score-banner{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,rgba(var(--a1),1),rgba(var(--a2),1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:.5rem 0 1.5rem;}
+/* SCI CARDS */
+.sci-cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin:1.5rem 0;text-align:left;}
+.sci-info-card{border-radius:18px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);}
+.sci-info-card img{width:100%;height:140px;object-fit:contain;object-position:center;display:block;background:rgba(255,255,255,.02);padding:8px;}
+.sci-info-body{padding:12px;}
+.sci-info-name{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;}
+.sci-info-meta{font-size:.65rem;color:var(--text-dim);margin:4px 0 8px;}
+.sci-info-known{font-size:.7rem;color:rgba(var(--a1),.9);font-weight:600;margin-bottom:8px;}
+.sci-info-fact{font-size:.68rem;color:var(--text-dim);line-height:1.5;border-top:1px solid rgba(255,255,255,.05);padding-top:8px;}
+.sci-info-fact strong{color:rgba(var(--a2),1);}
+/* FINAL STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin:1.5rem 0;}
+.stat-card{padding:1.2rem;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);}
+.stat-card-val{font-family:'Syne',sans-serif;font-size:2rem;font-weight:900;background:linear-gradient(135deg,rgba(var(--a1),1),rgba(var(--a2),1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-card-label{font-size:.68rem;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-top:4px;}
+.heatmap-wrap{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1rem 1.2rem;margin:1rem 0;}
+.heatmap-title{font-size:.7rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;}
+.heatmap-bars{display:flex;gap:6px;align-items:flex-end;height:60px;}
+.hmap-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.hmap-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;}
+.hmap-lbl{font-size:.55rem;font-weight:700;color:var(--text-dim);}
+.round-acc-row{display:flex;gap:.8rem;margin:.8rem 0;flex-wrap:wrap;}
+.acc-pill{flex:1;min-width:100px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);}
+.acc-pill-name{font-size:.62rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;}
+.acc-pill-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,rgba(var(--a1),1),rgba(var(--a2),1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.acc-pill-pts{font-size:.65rem;color:rgba(var(--a1),.8);font-weight:700;margin-top:2px;}
+/* SECTION DIVIDER */
+.section-divider{height:1px;background:linear-gradient(to right,transparent,rgba(255,255,255,.07),transparent);margin:1.5rem 0;}
+/* TIEBREAKER SECTION LABELS */
+.tb-section-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:6px 0 8px;margin-top:1rem;}
+/* TOAST */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:200;opacity:0;transition:all .3s;pointer-events:none;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast .toast-inner{padding:10px 24px;border-radius:999px;font-weight:800;font-size:.85rem;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+@keyframes shake{10%,90%{transform:translate3d(-1px,0,0)}20%,80%{transform:translate3d(2px,0,0)}30%,50%,70%{transform:translate3d(-4px,0,0)}40%,60%{transform:translate3d(4px,0,0)}}
+.shake{animation:shake .4s cubic-bezier(.36,.07,.19,.97) both;}
+/* THUNDERBOLT ANIMATION */
+@keyframes crackScreen{
+  0%{opacity:0;transform:scale(0.5) rotate(0deg);}
+  50%{opacity:1;transform:scale(1.5) rotate(180deg);}
+  100%{opacity:0;transform:scale(2) rotate(360deg);}
+}
+@keyframes lightning{
+  0%,100%{opacity:0;}
+  50%{opacity:1;}
+}
+.thunder-overlay{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  pointer-events:none;
+  display:none;
+}
+.thunder-overlay.active{
+  display:block;
+  animation:lightning 0.2s 3;
+}
+.thunder-bolt{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:15rem;
+  animation:crackScreen 1s ease-out;
+}
+.screen-cracks{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:
+    linear-gradient(45deg, transparent 48%, rgba(255,255,255,0.3) 49%, rgba(255,255,255,0.3) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(255,255,255,0.2) 49%, rgba(255,255,255,0.2) 51%, transparent 52%),
+    linear-gradient(135deg, transparent 48%, rgba(255,255,255,0.25) 49%, rgba(255,255,255,0.25) 51%, transparent 52%);
+  pointer-events:none;
+  opacity:0;
+}
+.screen-cracks.active{
+  animation:crackAppear 0.5s ease-out forwards;
+}
+@keyframes crackAppear{
+  0%{opacity:0;transform:scale(0.8);}
+  50%{opacity:0.8;}
+  100%{opacity:0;transform:scale(1.2);}
+}
+/* THEME FAB */
+.theme-fab{position:fixed;bottom:1.5rem;right:1.5rem;z-index:100;}
+.theme-btn-fab{width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(var(--a1),.3);background:rgba(var(--a1),.15);backdrop-filter:blur(12px);font-size:1.3rem;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .3s;display:flex;align-items:center;justify-content:center;}
+.theme-btn-fab:hover{transform:scale(1.12) rotate(15deg);}
+.theme-menu{position:absolute;bottom:66px;right:0;min-width:230px;border-radius:18px;padding:10px;background:rgba(10,10,20,.92);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.08);box-shadow:0 20px 60px rgba(0,0,0,.6);display:none;}
+.theme-menu.open{display:block;animation:fadeIn .2s ease;}
+.theme-menu-label{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dim);padding:4px 10px 8px;}
+.theme-option{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;cursor:pointer;transition:background .15s;border:none;background:transparent;width:100%;text-align:left;font-family:'Outfit',sans-serif;}
+.theme-option:hover{background:rgba(255,255,255,.05);}
+.theme-swatch{width:28px;height:28px;border-radius:8px;flex-shrink:0;}
+.theme-opt-name{font-size:.82rem;font-weight:800;color:var(--text);display:block;}
+.theme-opt-desc{font-size:.68rem;color:var(--text-dim);}
+.theme-check{margin-left:auto;color:rgba(var(--a2),1);font-size:.85rem;}
+@media(max-width:500px){.rounds-preview{grid-template-columns:1fr}.sci-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="void-bg"><div class="vl-1"></div><div class="vl-2"></div><div class="vl-3"></div></div>
+<canvas id="particle-canvas"></canvas>
+
+<!-- Thunder overlay for tiebreaker animation -->
+<div class="thunder-overlay" id="thunderOverlay">
+  <div class="thunder-bolt">⚡</div>
+</div>
+<div class="screen-cracks" id="screenCracks"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo"><div class="nav-logo-icon">⚡</div>FlashRecall</div>
+    <div class="nav-right">
+      <div class="nav-score" id="nav-score" style="display:none;">🏅 <span id="nav-score-val">0</span> pts</div>
+      <div class="nav-pill"><div class="nav-dot"></div><span id="nav-status">Cognition Lab</span></div>
+    </div>
+  </div>
+</nav>
+
+<div id="toast"><div class="toast-inner" id="toast-inner"></div></div>
+
+<div class="app">
+
+  <!-- START -->
+  <div class="screen active" id="screen-start">
+    <div style="text-align:center;padding:2rem 0;">
+      <div class="badge-pill" style="margin-bottom:1.5rem;">🔬 Rapid Image Recognition</div>
+      <h1 style="font-family:'Syne',sans-serif;font-size:clamp(2.2rem,7vw,4rem);font-weight:900;letter-spacing:-.04em;line-height:1.05;margin-bottom:1rem;" class="grad">FlashRecall</h1>
+      <p style="color:var(--text-dim);font-size:.95rem;line-height:1.9;max-width:500px;margin:0 auto 2rem;">Three rounds. Nine levels. Watch sequences flash — then reconstruct them in order. Earn points, stay sharp, unlock the Tiebreaker.</p>
+      
+      <div class="username-box">
+        <input type="text" id="username-input" class="username-input" placeholder="Enter your name..." />
+      </div>
+      
+      <div class="leaderboard-box" id="leaderboard-box">
+        <div class="leaderboard-title">🏆 Leaderboard</div>
+        <div class="leaderboard-list" id="leaderboard-list">
+          <div class="leaderboard-empty">No scores yet. Be the first!</div>
+        </div>
+        <div class="leaderboard-actions">
+          <button class="btn-ghost" onclick="resetLeaderboard()">🗑️ Reset Leaderboard</button>
+          <button class="btn-ghost" onclick="resetImageCache()">🔄 Reset Images</button>
+        </div>
+      </div>
+      
+      <div class="rounds-preview">
+        <div class="round-card">
+          <div class="r-icon">🎨</div>
+          <div class="r-title">Colours</div>
+          <div class="r-sub">3 levels · 4→6→8 items</div>
+          <div class="r-pts">1 pt / correct</div>
+        </div>
+        <div class="round-card">
+          <div class="r-icon">😄</div>
+          <div class="r-title">Emojis</div>
+          <div class="r-sub">3 levels · 4→6→8 items</div>
+          <div class="r-pts">2 pts / correct</div>
+        </div>
+        <div class="round-card">
+          <div class="r-icon">🏆</div>
+          <div class="r-title">Scientists</div>
+          <div class="r-sub">3 levels · 4→6→8 faces</div>
+          <div class="r-pts">4 pts / correct</div>
+        </div>
+      </div>
+      <div style="margin:.5rem 0 1.5rem;">
+        <button class="btn-ghost" onclick="toggleSettings()" style="gap:7px;display:inline-flex;align-items:center;">⚙️ Customise Flash Speed</button>
+      </div>
+      <div id="settings-panel">
+        <div class="settings-title">⚙️ Game Settings</div>
+        <div class="settings-row">
+          <div><div class="settings-label">Flash Duration</div><div class="settings-sub">How long each item is shown</div></div>
+          <div class="range-wrap"><input type="range" min="200" max="3000" step="100" value="1000" oninput="updateSetting('flash',this.value)"><span class="range-val" id="v-flash">1000ms</span></div>
+        </div>
+        <div class="settings-row">
+          <div><div class="settings-label">Gap Between Items</div><div class="settings-sub">Blank time between flashes</div></div>
+          <div class="range-wrap"><input type="range" min="50" max="500" step="50" value="150" oninput="updateSetting('gap',this.value)"><span class="range-val" id="v-gap">150ms</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="startGame()">⚡ Start Game</button>
+        <button class="btn-primary btn-violet" onclick="startTiebreakerIntro()">🔥 Tiebreaker Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUND INTRO -->
+  <div class="screen" id="screen-round-intro">
+    <div style="text-align:center;padding:3rem 0;">
+      <div style="font-size:4rem;margin-bottom:1rem;" id="ri-icon">🎨</div>
+      <div class="badge-pill" style="margin-bottom:1rem;" id="ri-badge">Round 1 of 3</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;letter-spacing:-.03em;margin-bottom:.8rem;" id="ri-title">The Colour Challenge</h2>
+      <p style="color:var(--text-dim);max-width:460px;margin:0 auto 1rem;font-size:.92rem;line-height:1.7;" id="ri-desc"></p>
+      <p style="color:rgba(var(--a1),1);font-size:.78rem;font-weight:700;margin-bottom:1.5rem;" id="ri-pts-label"></p>
+      <div class="level-bars" id="ri-bars"></div>
+      <p style="font-size:.72rem;color:var(--text-dim);margin-bottom:2rem;" id="ri-level-label"></p>
+      <button class="btn-primary" onclick="startFlash()">Ready — Begin →</button>
+    </div>
+  </div>
+
+  <!-- FLASH -->
+  <div class="screen" id="screen-flash">
+    <div style="text-align:center;padding:1.5rem 0;">
+      <div class="flash-label">👁️ WATCH CAREFULLY</div>
+      <div class="flash-stage" id="flash-stage"></div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="flash-progress"></div></div>
+      <div class="seq-counter" id="seq-counter">Item 1 of 4</div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="screen" id="screen-input">
+    <div>
+      <div class="input-header">
+        <div>
+          <div class="input-title" id="input-title">Tap in sequence order</div>
+          <div class="input-hint" id="input-hint">Click each item in the order shown</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--text-dim);" id="input-progress-label">0 / 4</div>
+      </div>
+      <div class="seq-dots" id="seq-dots"></div>
+      <div id="input-grid"></div>
+    </div>
+  </div>
+
+  <!-- LEVEL RESULT -->
+  <div class="screen" id="screen-level-result">
+    <div style="text-align:center;padding:2rem 0;">
+      <div class="result-icon" id="res-icon">🏆</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:900;" id="res-title">Level Complete!</h2>
+      <p id="res-desc" style="color:var(--text-dim);margin:.5rem 0 .5rem;"></p>
+      <div class="score-banner" id="res-score-banner"></div>
+      <div class="result-stats-row" id="res-stats-row"></div>
+      <div id="sci-reveal-section" style="display:none;text-align:left;">
+        <div class="section-divider"></div>
+        <div style="font-size:.72rem;font-weight:800;color:rgba(var(--a1),1);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;">🔬 Scientists in this sequence</div>
+        <div class="sci-cards-grid" id="sci-reveal-grid"></div>
+        <div class="section-divider"></div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
+        <button class="btn-primary" id="res-next-btn">Next →</button>
+        <button class="btn-ghost" onclick="resetToStart()">↩ Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL STATS -->
+  <div class="screen" id="screen-stats">
+    <h2 style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.03em;" class="grad">Session Report</h2>
+    <p style="color:var(--text-dim);margin-bottom:.5rem;font-size:.88rem;">Your full cognitive performance breakdown.</p>
+    <div class="score-banner" id="stats-score-banner"></div>
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="heatmap-wrap">
+      <div class="heatmap-title">⚠️ Error Position Heatmap</div>
+      <div class="heatmap-bars" id="heatmap-bars"></div>
+    </div>
+    <div style="font-size:.72rem;font-weight:800;color:var(--text-dim);text-transform:uppercase;letter-spacing:.1em;margin:1rem 0 .5rem;">Round Breakdown</div>
+    <div class="round-acc-row" id="round-acc-row"></div>
+    <div class="section-divider"></div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;">
+      <button class="btn-primary" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn-primary btn-violet" onclick="startTiebreakerIntro()">⚡ Tiebreaker Round</button>
+      <button class="btn-secondary" onclick="resetToStart()">🔁 Play Again</button>
+    </div>
+  </div>
+
+  <!-- TIEBREAKER INTRO -->
+  <div class="screen" id="screen-tb-intro">
+    <div style="text-align:center;padding:3rem 0;">
+      <div style="font-size:4rem;margin-bottom:1rem;">⚡</div>
+      <div class="badge-pill" style="margin-bottom:1rem;background:rgba(var(--a3),.1);border-color:rgba(var(--a3),.3);color:rgba(var(--a3),1);">🔥 Tiebreaker Round</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;letter-spacing:-.03em;margin-bottom:.8rem;">The Ultimate Mix</h2>
+      <p style="color:var(--text-dim);max-width:460px;margin:0 auto 1rem;font-size:.92rem;line-height:1.7;">Colours, Emojis and Scientists — all scrambled into one brutal sequence. No mercy, no hints.</p>
+      <p style="font-size:.8rem;font-weight:700;margin-bottom:.5rem;color:rgba(var(--a1),1);">3 pts per correct guess · 10 mixed items</p>
+      <p style="font-size:.8rem;color:var(--text-dim);margin-bottom:2rem;" id="tb-score-text">Current Total Score: <strong style="color:rgba(var(--a2),1);" id="tb-score-before">0</strong> pts</p>
+      <button class="btn-primary btn-violet" onclick="startTbFlash()">🔥 Begin Tiebreaker →</button>
+      <div style="margin-top:1rem;"><button class="btn-ghost" onclick="showScreen('screen-start')">← Back to Home</button></div>
+    </div>
+  </div>
+
+  <!-- TIEBREAKER FLASH -->
+  <div class="screen" id="screen-tb-flash">
+    <div style="text-align:center;padding:1.5rem 0;">
+      <div class="flash-label" style="color:rgba(var(--a3),1);">⚡ TIEBREAKER — WATCH EVERYTHING</div>
+      <div class="flash-stage" id="tb-flash-stage"></div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="tb-flash-progress" style="background:rgba(var(--a3),1);"></div></div>
+      <div class="seq-counter" id="tb-seq-counter">Item 1 of 10</div>
+    </div>
+  </div>
+
+  <!-- TIEBREAKER INPUT -->
+  <div class="screen" id="screen-tb-input">
+    <div>
+      <div class="input-header">
+        <div>
+          <div class="input-title">Recall the Mixed Sequence</div>
+          <div class="input-hint" id="tb-input-hint">Click items in the exact order they appeared</div>
+        </div>
+        <div style="font-size:.72rem;color:var(--text-dim);" id="tb-progress-label">0 / 10</div>
+      </div>
+      <div class="seq-dots" id="tb-seq-dots"></div>
+      <div class="tb-section-label" style="color:rgba(var(--a1),.8);">🎨 Colours</div>
+      <div id="tb-color-grid" class="color-grid" style="margin-bottom:1.2rem;"></div>
+      <div class="tb-section-label" style="color:rgba(var(--a2),.8);">😄 Emojis</div>
+      <div id="tb-emoji-grid" class="emoji-grid" style="margin-bottom:1.2rem;"></div>
+      <div class="tb-section-label" style="color:rgba(var(--a3),.8);">🏆 Scientists</div>
+      <div id="tb-sci-grid" class="sci-grid"></div>
+    </div>
+  </div>
+
+  <!-- TIEBREAKER RESULT -->
+  <div class="screen" id="screen-tb-result">
+    <div style="text-align:center;padding:2rem 0;">
+      <div class="result-icon" id="tb-res-icon">🔥</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:900;" id="tb-res-title"></h2>
+      <p id="tb-res-desc" style="color:var(--text-dim);margin:.5rem 0 .5rem;"></p>
+      <div class="score-banner" id="tb-score-banner"></div>
+      <div class="result-stats-row" id="tb-stats-row"></div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem;">
+        <button class="btn-primary btn-violet" onclick="startTiebreakerIntro()">⚡ Play Again</button>
+        <button class="btn-secondary" onclick="showScreen('screen-stats')" id="tb-stats-btn" style="display:none;">📊 Stats</button>
+        <button class="btn-ghost" onclick="resetToStart()">↩ New Game</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- THEME FAB -->
+<div class="theme-fab">
+  <div class="theme-menu" id="themeMenu">
+    <div class="theme-menu-label">🎨 Colour Theme</div>
+    <button class="theme-option" onclick="setTheme('quantum')"><div class="theme-swatch" style="background:linear-gradient(135deg,#fb9233,#14b8a6,#8b5cf6)"></div><div><span class="theme-opt-name">Quantum Void</span><span class="theme-opt-desc">Amber · Teal · Violet</span></div><span class="theme-check" id="check-quantum">✓</span></button>
+    <button class="theme-option" onclick="setTheme('fusion')"><div class="theme-swatch" style="background:linear-gradient(135deg,#ef4444,#f59e0b,#f97316)"></div><div><span class="theme-opt-name">Nuclear Fusion</span><span class="theme-opt-desc">Red · Gold · Orange</span></div><span class="theme-check" id="check-fusion" style="display:none">✓</span></button>
+    <button class="theme-option" onclick="setTheme('dark')"><div class="theme-swatch" style="background:linear-gradient(135deg,#38bdf8,#6366f1,#ec4899)"></div><div><span class="theme-opt-name">Dark Matter</span><span class="theme-opt-desc">Cyan · Indigo · Pink</span></div><span class="theme-check" id="check-dark" style="display:none">✓</span></button>
+    <button class="theme-option" onclick="setTheme('bio')"><div class="theme-swatch" style="background:linear-gradient(135deg,#4ade80,#22d3ee,#a3e635)"></div><div><span class="theme-opt-name">Bioluminescent</span><span class="theme-opt-desc">Green · Cyan · Lime</span></div><span class="theme-check" id="check-bio" style="display:none">✓</span></button>
+    <button class="theme-option" onclick="setTheme('india')"><div class="theme-swatch" style="background:linear-gradient(135deg,#ff9933,#fff,#138808)"></div><div><span class="theme-opt-name">Bharat Science</span><span class="theme-opt-desc">Saffron · White · Green</span></div><span class="theme-check" id="check-india" style="display:none">✓</span></button>
+  </div>
+  <button class="theme-btn-fab" onclick="toggleThemeMenu(event)">🎨</button>
+</div>
+
+<script src="flashrecall-game.js"></script>
+</body>
+</html>
