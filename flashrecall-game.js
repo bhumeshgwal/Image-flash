@@ -155,13 +155,13 @@ const ROUNDS = [
 const CHEAT_SEQUENCES = {
   '0-0': [0,4,5,1], // red, purple, orange, blue
   '0-1': [1,3,2,3,3,6], // blue, yellow, green, yellow, yellow, pink
-  '0-2': [1,0,2,6,7,4,4,4], // blue, red, green, pink, cyan, purple, purple, purple
+  '0-2': [1,0,2,6,7,4,5,6], // blue, red, green, pink, cyan, purple, purple, purple
   '1-0': [0,1,2,2], // dog, cat, star, star
   '1-1': [6,4,5,8,0,1], // football, car, music, cake, dog, cat
-  '1-2': [7,8,7,1,2,4,5,3,0], // rainbow, cake, rainbow, cat, star, car, music, pizza, dog
+  '1-2': [7,8,7,1,2,4,5,3], // rainbow, cake, rainbow, cat, star, car, music, pizza, dog
   '2-0': [0,0,3,11], // Tesla, Tesla, Newton, APJ
-  '2-1': [5,9,10,3,2,0], // Hawking, Alan, Thomas, Newton, da Vinci, Tesla
-  '2-2': [10, 9, 0, 2, 5, 6, 11, 7], // Bose, Vikram, Tesla, Newton, Feynman, Turing, Ramanujan, Kalam
+  '2-1': [2,4,8,1,3,10], // Hawking, Alan, Thomas, Newton, da Vinci, Tesla
+  '2-2': [9, 7, 5, 2, 2, 1, 3, 8], // Bose, Vikram, Tesla, Newton, Feynman, Turing, Ramanujan, Kalam
 };
 
 const SEQ_LENGTHS = [4,6,8];
@@ -937,3 +937,4 @@ document.addEventListener('click',()=>document.getElementById('themeMenu').class
 
 // Initialize leaderboard on load
 updateLeaderboardDisplay();
+
