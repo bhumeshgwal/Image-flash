@@ -150,8 +150,8 @@ const ROUNDS = [
 // CHEAT MODE SEQUENCES - only for Bhumesh
 const CHEAT_SEQUENCES = {
   '0-0': [0,4,5,1], // red, purple, orange, blue
-  '0-1': [1,3,2,3,3,6], // blue, yellow, green, yellow, yellow, pink
-  '0-2': [1,0,2,6,7,4,5,6], // blue, red, green, pink, cyan, purple, purple, purple
+  '0-1': [1,3,2,3,3,5], // blue, yellow, green, yellow, yellow, pink
+  '0-2': [2,1,3,5,4,0,0,5], // blue, red, green, pink, cyan, purple, purple, purple
   '1-0': [0,1,2,2], // dog, cat, star, star
   '1-1': [6,4,5,8,0,1], // football, car, music, cake, dog, cat
   '1-2': [7,8,7,1,2,4,5,3], // rainbow, cake, rainbow, cat, star, car, music, pizza, dog
@@ -934,5 +934,6 @@ document.addEventListener('click',()=>document.getElementById('themeMenu').class
 
 // Initialize leaderboard on load
 updateLeaderboardDisplay();
+
 
 
