@@ -1,16 +1,12 @@
 /* ═══════════════ DATA ═══════════════ */
 const COLORS = [
-  {id:0,name:'Red',hex:'#ef4444'},
-  {id:1,name:'Blue',hex:'#3b82f6'},
-  {id:2,name:'Green',hex:'#22c55e'},
-  {id:3,name:'Yellow',hex:'#eab308'},
-  {id:4,name:'Purple',hex:'#a855f7'},
-  {id:5,name:'Orange',hex:'#f97316'},
-  {id:6,name:'Pink',hex:'#ec4899'},
-  {id:7,name:'Cyan',hex:'#06b6d4'},
-  {id:8,name:'Gray',hex:'#94a3b8'},
+  { id: 0, name: 'Red', hex: '#ef4444' },
+  { id: 1, name: 'Yellow', hex: '#eab308' },
+  { id: 2, name: 'Pink', hex: '#ec4899' },
+  { id: 3, name: 'Black', hex: '#000000' },
+  { id: 4, name: 'White', hex: '#ffffff' },
+  { id: 5, name: 'Green', hex: '#22c55e' },
 ];
-
 const EMOJIS = [
   {id:0,emoji:'🐶',name:'Dog'},
   {id:1,emoji:'🐱',name:'Cat'},
@@ -322,7 +318,7 @@ function saveUsedSequence(round, level, sequence) {
 
 function generateUniqueSequence(round, level) {
   const pool = ROUNDS[round].data;
-  const len = SEQ_LENGTHS[level];
+  const len = G.round === 2 ? [3, 4, 6][G.level] : SEQ_LENGTHS[G.level];
   const used = getUsedSequences();
   const key = `${round}-${level}`;
   
@@ -473,7 +469,8 @@ function showRoundIntro(){
   document.getElementById('ri-title').textContent=r.title;
   document.getElementById('ri-desc').textContent=r.desc;
   document.getElementById('ri-pts-label').textContent=`${r.pts} pt${r.pts>1?'s':''} per correct guess`;
-  document.getElementById('ri-level-label').textContent=`Level ${G.level+1} · ${SEQ_LENGTHS[G.level]} items`;
+  const displayLen = G.round === 2 ? [3, 4, 6][G.level] : SEQ_LENGTHS[G.level];
+  document.getElementById('ri-level-label').textContent = `Level ${G.level+1} · ${displayLen} items`;
   document.getElementById('nav-status').textContent=`R${G.round+1} · L${G.level+1}`;
   const bars=document.getElementById('ri-bars');
   bars.innerHTML='';
@@ -937,4 +934,5 @@ document.addEventListener('click',()=>document.getElementById('themeMenu').class
 
 // Initialize leaderboard on load
 updateLeaderboardDisplay();
+
 
